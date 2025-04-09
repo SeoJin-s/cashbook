@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -41,4 +42,69 @@ public class CategoryDao {
 
 	return list;
 	}
+
+	public int insertCategory(Category category) throws ClassNotFoundException, SQLException {
+		int row = 0;
+		
+				// 1) 드라이버 로딩
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				// 2) db 연결
+				Connection conn = null;
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook","root","java1234");
+				String sql = "INSERT INTO category (kind, title, createdate) VALUES (?, ?, NOW())";
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1,category.getKind());
+				stmt.setString(2, category.getTitle());
+				
+				row = stmt.executeUpdate();
+				
+				stmt.close();
+				conn.close();
+		
+		return row;
+		
+	}
+	
+	public boolean hasCashData(int categoryNo) throws Exception {
+		boolean result = false;
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection(
+			"jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+		String sql = "SELECT COUNT(*) FROM cash WHERE category_no = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, categoryNo);
+		ResultSet rs = stmt.executeQuery();
+
+		if (rs.next() && rs.getInt(1) > 0) {
+			result = true;
+		}
+
+		rs.close();
+		stmt.close();
+		conn.close();
+
+		return result;
+	}
+	
+	public int deleteCategory(int categoryNo) throws Exception {
+		int row = 0;
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection(
+			"jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+		String sql = "DELETE FROM category WHERE category_no = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, categoryNo);
+
+		row = stmt.executeUpdate();
+
+		stmt.close();
+		conn.close();
+
+		return row;
+	}
 }
+	

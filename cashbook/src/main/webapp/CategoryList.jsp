@@ -52,12 +52,37 @@
 		.table td {
 			vertical-align: middle;
 		}
+		.btn-brown {
+			background-color: #6d4c41;
+			color: white;
+			font-weight: 600;
+			border-radius: 10px;
+			box-shadow: 0 4px 10px rgba(109, 76, 65, 0.2);
+			transition: all 0.2s ease-in-out;
+		}
+		.btn-brown:hover {
+			background-color: #5d4037;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 12px rgba(109, 76, 65, 0.3);
+		}
 	</style>
 </head>
 <body>
 
 <div class="container-box">
-	<h2><i class="bi bi-list-ul me-2 text-warning"></i>카테고리 목록</h2>
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h2 class="mb-0 d-flex align-items-center">
+				<i class="bi bi-list-ul me-2 text-warning"></i>DIARY
+			</h2>
+			<div>
+				<a href="insertCategoryForm.jsp" class="btn btn-brown me-2">
+					<i class="bi bi-plus-circle me-1"></i> 추가
+				</a>
+				<a href="updateCategoryTitleForm.jsp" class="btn btn-brown">
+					<i class="bi bi-pencil-square me-1"></i> 수정
+				</a>
+			</div>
+		</div>
 
 	<table class="table table-bordered text-center mt-4">
 		<thead>
@@ -66,26 +91,34 @@
 				<th>분류</th>
 				<th>제목</th>
 				<th>생성일</th>
+				<th>삭제</th>
 			</tr>
 		</thead>
 		<tbody>
 			<%
 				for (Category c : list) {
 			%>
-				<tr>
-					<td><%= c.getCategoryNo() %></td>
-					<td>
-						<% if ("수입".equals(c.getKind())) { %>
-							<span class="badge bg-primary">수입</span>
-						<% } else if ("지출".equals(c.getKind())) { %>
-							<span class="badge bg-danger">지출</span>
-						<% } else { %>
-							<%= c.getKind() %>
-						<% } %>
-					</td>
-					<td><%= c.getTitle() %></td>
-					<td><%= c.getCreatedate().toLocalDate() %></td>
-				</tr>
+			<tr>
+				<td><%= c.getCategoryNo() %></td>
+				<td>
+					<% if ("수입".equals(c.getKind())) { %>
+						<span class="badge bg-primary">수입</span>
+					<% } else if ("지출".equals(c.getKind())) { %>
+						<span class="badge bg-danger">지출</span>
+					<% } else { %>
+						<%= c.getKind() %>
+					<% } %>
+				</td>
+				<td><%= c.getTitle() %></td>
+				<td><%= c.getCreatedate().toLocalDate() %></td>
+				<td>
+					<a href="deleteCategory.jsp?categoryNo=<%= c.getCategoryNo() %>"
+					   class="btn btn-sm btn-outline-danger"
+					   onclick="return confirm('정말 삭제하시겠습니까?')">
+						<i class="bi bi-trash"></i> 삭제
+					</a>
+				</td>
+			</tr>
 			<%
 				}
 			%>

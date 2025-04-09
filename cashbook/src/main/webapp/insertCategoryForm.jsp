@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
+	// 로그인 확인
 	if (session.getAttribute("loginAdmin") == null) {
 		response.sendRedirect("/cashbook/loginForm.jsp");
 		return;
@@ -18,10 +19,6 @@
 	<form action="insertCategoryAction.jsp" method="post">
 		<table border="1">
 			<tr>
-				<th>카테고리 번호</th>
-				<td><input type="number" name="categoryNo" required></td>
-			</tr>
-			<tr>
 				<th>구분</th>
 				<td>
 					<select name="kind" required>
@@ -39,5 +36,6 @@
 		<br>
 		<button type="submit">추가하기</button>
 	</form>
+
 </body>
 </html>
