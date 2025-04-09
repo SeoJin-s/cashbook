@@ -75,7 +75,7 @@
 
 	<div class="login-container">
 		<h2>
-			<span class="title-box">CALENDAR</span>
+			<span class="title-box">BOOK</span>
 		</h2>
 
 		<% if ("1".equals(request.getParameter("error"))) { %>
