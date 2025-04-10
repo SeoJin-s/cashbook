@@ -75,7 +75,7 @@
 
 	<div class="login-container">
 		<h2>
-			<span class="title-box">BOOK</span>
+			<span class="title-box">Rush&Cash</span>
 		</h2>
 
 		<% if ("1".equals(request.getParameter("error"))) { %>

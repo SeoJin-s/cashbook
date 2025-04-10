@@ -145,6 +145,9 @@
 		</div>
 	</form>
 </div>
+					<a href="/cashbook/CategoryList.jsp" class="btn btn-secondary">
+				<i class="bi bi-arrow-left"></i> 목록으로
+			</a>
 
 </body>
 </html>

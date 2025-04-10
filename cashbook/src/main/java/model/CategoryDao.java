@@ -106,5 +106,126 @@ public class CategoryDao {
 
 		return row;
 	}
-}
+
+	public int updateCategoryTitle(int categoryNo, String title ) throws ClassNotFoundException, SQLException {
+		int row = 0;
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection(
+			"jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+		
+		String sql = "update category set title = ? where category_no = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, title);
+		stmt.setInt(2, categoryNo);
+		
+		row = stmt.executeUpdate();
+		
+		stmt.close();
+		conn.close();
+		return row;
+		
+	}
 	
+	public Category selectCategoryOne(int categoryNo) throws ClassNotFoundException, SQLException {
+		Category category = null;
+	
+	Class.forName("com.mysql.cj.jdbc.Driver");
+	Connection conn = DriverManager.getConnection(
+		"jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+	String sql = "SELECT category_no, kind, title, createdate FROM category WHERE category_no = ?";
+	PreparedStatement stmt = conn.prepareStatement(sql);
+	stmt.setInt(1, categoryNo);
+
+	ResultSet rs = stmt.executeQuery();
+	
+	if(rs.next())	{
+		category = new Category();
+		category.setCategoryNo(rs.getInt("category_no"));
+		category.setKind(rs.getString("kind"));
+		category.setTitle(rs.getString("title"));
+		category.setCreatedate(rs.getTimestamp("createdate").toLocalDateTime());
+	}
+	
+		rs.close();
+		stmt.close();
+		conn.close();
+		return category;
+		
+	
+	}
+	// ✅ 2. 페이징 + 검색 목록 조회
+	public ArrayList<Category> selectCategoryListByPaging(String searchWord, int beginRow, int rowPerPage) throws Exception {
+		ArrayList<Category> list = new ArrayList<>();
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+		String sql;
+		PreparedStatement stmt;
+
+		// 검색어가 있을 경우
+		if (searchWord != null && !searchWord.equals("")) {
+			sql = "SELECT category_no, kind, title, createdate " +
+			      "FROM category WHERE title LIKE ? " +
+			      "ORDER BY category_no DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, "%" + searchWord + "%");
+			stmt.setInt(2, beginRow);
+			stmt.setInt(3, rowPerPage);
+
+		} else {
+			// 검색어 없을 경우
+			sql = "SELECT category_no, kind, title, createdate " +
+			      "FROM category ORDER BY category_no DESC LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, beginRow);
+			stmt.setInt(2, rowPerPage);
+		}
+
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			Category c = new Category();
+			c.setCategoryNo(rs.getInt("category_no"));
+			c.setKind(rs.getString("kind"));
+			c.setTitle(rs.getString("title"));
+			c.setCreatedate(rs.getTimestamp("createdate").toLocalDateTime());
+			list.add(c);
+		}
+
+		rs.close();
+		stmt.close();
+		conn.close();
+
+		return list;
+	}
+		// 전체 카테고리 수
+	public int countCategory(String searchWord) throws Exception {
+		int count = 0;
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+		String sql = "SELECT COUNT(*) FROM category";
+		if (searchWord != null && !searchWord.equals("")) {
+			sql += " WHERE title LIKE ?";
+		}
+
+		PreparedStatement stmt = conn.prepareStatement(sql);
+
+		if (searchWord != null && !searchWord.equals("")) {
+			stmt.setString(1, "%" + searchWord + "%");
+		}
+
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+			count = rs.getInt(1);
+		}
+
+		rs.close();
+		stmt.close();
+		conn.close();
+
+		return count;
+	}
+}	

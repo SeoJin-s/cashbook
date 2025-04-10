@@ -1,4 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	String loginAdmin = (String) session.getAttribute("loginAdmin");
+	if (loginAdmin == null) {
+		response.sendRedirect("/cashbook/loginForm.jsp");
+		return;
+	}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,15 +19,24 @@
 
 <style>
 	body {
-		background-color: #f5eee6; /* ✅ 오트밀 컬러 */
+		background-color: #f5eee6;
 		font-family: 'Segoe UI', sans-serif;
+	}
+
+	.header-bar {
+		max-width: 900px;
+		margin: 20px auto 0;
+		padding: 10px 20px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.index-container {
 		max-width: 600px;
-		margin: 100px auto;
+		margin: 40px auto;
 		padding: 40px;
-		background: #ffffff; /* 내부는 흰색으로 대비 */
+		background: #ffffff;
 		border-radius: 18px;
 		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 		text-align: center;
@@ -57,6 +73,17 @@
 </head>
 <body>
 
+	<!-- 🔐 상단 관리자 로그인 정보 -->
+	<div class="header-bar">
+		<div class="fw-semibold text-dark fs-5">
+			<i class="bi bi-person-circle me-2"></i><%= loginAdmin %> 님
+		</div>
+		<a href="/cashbook/logout.jsp" class="btn btn-sm btn-outline-danger">
+			<i class="bi bi-box-arrow-right"></i> 로그아웃
+		</a>
+	</div>
+
+	<!-- 📦 메인 버튼 -->
 	<div class="index-container">
 		<h1>INVENTORY</h1>
 		<div class="d-grid gap-3 mt-4">
