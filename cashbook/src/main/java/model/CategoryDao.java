@@ -12,23 +12,23 @@ import dto.Category;
 
 public class CategoryDao {
 	// 1) 카테고리 목록 조회
-	public ArrayList<Category> selectCategoryList() throws Exception {
+	public ArrayList<Category> selectCategoryList() throws ClassNotFoundException, SQLException {
 		ArrayList<Category> list = new ArrayList<>();
 		// 1) 드라이버 로딩
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// 2) db 연결
 		Connection conn = null;
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook","root","java1234");
-		String sql = "SELECT category_no, kind, title, createdate FROM category ORDER BY category_no ASC";
+		String sql = "SELECT category_no categoryNo, kind, title, createdate FROM category ORDER BY category_no ASC";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 		
 	while(rs.next()) {
 		Category c = new Category();
-		c.setCategoryNo(rs.getInt("category_no"));
+		c.setCategoryNo(rs.getInt("categoryNo"));
 		c.setKind(rs.getString("kind"));
 		c.setTitle(rs.getString("title"));
-	
+		
 		Timestamp ts = rs.getTimestamp("createdate");
 		if (ts != null) {
 			c.setCreatedate(ts.toLocalDateTime());
@@ -51,7 +51,7 @@ public class CategoryDao {
 				// 2) db 연결
 				Connection conn = null;
 				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook","root","java1234");
-				String sql = "INSERT INTO category (kind, title, createdate) VALUES (?, ?, NOW())";
+				String sql = "INSERT INTO category(kind, title, createdate) VALUES(?, ?, NOW())";
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				stmt.setString(1,category.getKind());
 				stmt.setString(2, category.getTitle());
