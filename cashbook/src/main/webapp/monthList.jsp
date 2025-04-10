@@ -34,7 +34,7 @@
 
 	// 수입/지출 목록 조회 DAO 호출 (간단히 예시)
 	CashDao cashDao = new CashDao();
-	HashMap<Integer, Integer> dailyTotalMap = cashDao.getDailyTotalMap(year, month + 1); // 1~31일
+	HashMap<Integer, ArrayList<Cash>> cashMap = cashDao.selectCashListByMonth(year, month + 1); // 1~31일
 %>
 <!DOCTYPE html>
 <html>
@@ -55,7 +55,8 @@
         }
 
         .calendar-table td {
-            height: 100px;
+		    height: 120px;
+		    overflow-y: auto;
             vertical-align: top;
             padding: 6px;
             border: 1px solid #ddd;
@@ -99,7 +100,7 @@
 </head>
 <body>
 
-<!-- 🔐 로그인 관리자 표시 -->
+<!-- 로그인 관리자 표시 -->
 <div class="login-bar d-flex justify-content-between align-items-center flex-wrap">
     <span class="fw-semibold text-dark" style="font-size: 1rem;">
         <i class="bi bi-person-circle me-2"></i> <%= loginAdmin %> 님 환영합니다.
@@ -114,7 +115,7 @@
     </div>
 </div>
 
-<!-- 📅 달력 -->
+<!-- 달력 -->
 <div class="container-box mt-2">
     <h4 class="text-center mb-4"><%= year %>년 <%= (month + 1) %>월</h4>
 
@@ -146,8 +147,14 @@
                     out.println("<a href='dateList.jsp?year=" + year + "&month=" + (month + 1) + "&date=" + date + "' class='date-link'>");
                     out.println("<strong>" + date + "</strong><br>");
 
-                    if (dailyTotalMap.containsKey(date)) {
-                        out.println("<span class='text-success'>￦ " + dailyTotalMap.get(date) + "</span>");
+                    ArrayList<Cash> list = cashMap.get(date);
+                    if (list != null) {
+                    	for (Cash c : list) {
+                    		String kindClass = "수입".equals(c.getKind()) ? "text-success" : "text-danger";
+                    		out.println("<div class='" + kindClass + "' style='font-size:0.75rem;'>");
+                    		out.println("[" + c.getCategoryTitle() + "] " + c.getMemo() + ": ￦" + c.getPrice());
+                    		out.println("</div>");
+                    	}
                     }
 
                     out.println("</a></td>");
@@ -163,7 +170,7 @@
         </tbody>
     </table>
 
-    <!-- ⬅️➡️ 이전/다음 달 -->
+    <!-- 이전/다음 달 이동 -->
     <div class="d-flex justify-content-between mt-4">
         <a class="btn btn-outline-secondary" href="monthList.jsp?year=<%= prevYear %>&month=<%= prevMonth %>">
             ◀ 이전달
