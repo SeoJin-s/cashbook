@@ -19,7 +19,7 @@ public class CategoryDao {
 		// 2) db 연결
 		Connection conn = null;
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook","root","java1234");
-		String sql = "SELECT category_no categoryNo, kind, title, createdate FROM category ORDER BY category_no ASC";
+		String sql = "SELECT category_no categoryNo, kind, title, color createdate FROM category ORDER BY category_no ASC";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		ResultSet rs = stmt.executeQuery();
 		
@@ -28,6 +28,7 @@ public class CategoryDao {
 		c.setCategoryNo(rs.getInt("categoryNo"));
 		c.setKind(rs.getString("kind"));
 		c.setTitle(rs.getString("title"));
+		c.setColor(rs.getString("color")); // ✅ 색상 컬럼 처리
 		
 		Timestamp ts = rs.getTimestamp("createdate");
 		if (ts != null) {
@@ -127,32 +128,28 @@ public class CategoryDao {
 		
 	}
 	
-	public Category selectCategoryOne(int categoryNo) throws ClassNotFoundException, SQLException {
-		Category category = null;
-	
-	Class.forName("com.mysql.cj.jdbc.Driver");
-	Connection conn = DriverManager.getConnection(
-		"jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
-	String sql = "SELECT category_no, kind, title, createdate FROM category WHERE category_no = ?";
-	PreparedStatement stmt = conn.prepareStatement(sql);
-	stmt.setInt(1, categoryNo);
+	public Category selectCategoryOne(int categoryNo) throws Exception {
+	    Category category = null;
+	    Class.forName("com.mysql.cj.jdbc.Driver");
+	    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
 
-	ResultSet rs = stmt.executeQuery();
-	
-	if(rs.next())	{
-		category = new Category();
-		category.setCategoryNo(rs.getInt("category_no"));
-		category.setKind(rs.getString("kind"));
-		category.setTitle(rs.getString("title"));
-		category.setCreatedate(rs.getTimestamp("createdate").toLocalDateTime());
-	}
-	
-		rs.close();
-		stmt.close();
-		conn.close();
-		return category;
-		
-	
+	    String sql = "SELECT category_no, kind, title, color FROM category WHERE category_no = ?";
+	    PreparedStatement stmt = conn.prepareStatement(sql);
+	    stmt.setInt(1, categoryNo);
+	    ResultSet rs = stmt.executeQuery();
+
+	    if (rs.next()) {
+	        category = new Category();
+	        category.setCategoryNo(rs.getInt("category_no"));
+	        category.setKind(rs.getString("kind")); // 💡 kind 값 가져옴
+	        category.setTitle(rs.getString("title"));
+	        category.setColor(rs.getString("color"));
+	    }
+
+	    rs.close();
+	    stmt.close();
+	    conn.close();
+	    return category;
 	}
 	// ✅ 2. 페이징 + 검색 목록 조회
 	public ArrayList<Category> selectCategoryListByPaging(String searchWord, int beginRow, int rowPerPage) throws Exception {
@@ -201,6 +198,7 @@ public class CategoryDao {
 	}
 		// 전체 카테고리 수
 	public int countCategory(String searchWord) throws Exception {
+
 		int count = 0;
 
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -227,5 +225,28 @@ public class CategoryDao {
 		conn.close();
 
 		return count;
+	}
+
+	public ArrayList<Category> selectCategoryListByKind(String kind) throws Exception {
+		ArrayList<Category> list = new ArrayList<>();
+
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+		String sql = "SELECT category_no, kind, title, color FROM category WHERE kind = ? ORDER BY category_no";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, kind);
+
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			Category c = new Category();
+			c.setCategoryNo(rs.getInt("category_no"));
+			c.setKind(rs.getString("kind"));
+			c.setTitle(rs.getString("title"));
+			c.setColor(rs.getString("color"));
+			list.add(c);
+		}
+		rs.close(); stmt.close(); conn.close();
+		return list;
 	}
 }	

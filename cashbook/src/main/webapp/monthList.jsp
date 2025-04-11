@@ -32,9 +32,19 @@
 	int nextYear = month == 11 ? year + 1 : year;
 	int nextMonth = month == 11 ? 0 : month + 1;
 
-	// 수입/지출 목록 조회 DAO 호출 (간단히 예시)
+	// 수입/지출 목록 조회
 	CashDao cashDao = new CashDao();
-	HashMap<Integer, ArrayList<Cash>> cashMap = cashDao.selectCashListByMonth(year, month + 1); // 1~31일
+	HashMap<Integer, ArrayList<Cash>> cashMap = cashDao.selectCashListByMonth(year, month + 1);
+
+	// 🔥 [추가] 수입/지출 통계 조회
+	ArrayList<ReportData> usageList = cashDao.getTotalStats(year, month + 1);
+	int totalIncome = 0, totalExpense = 0;
+
+	for (ReportData r : usageList) {
+	    if ("수입".equals(r.getKind())) totalIncome = r.getTotal();
+	    else if ("지출".equals(r.getKind())) totalExpense = r.getTotal();
+	}
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -114,11 +124,42 @@
         </a>
     </div>
 </div>
-
+<!-- ✅ 카테고리별 통계 블럭만 출력 -->
+<div class="container-box p-4 mb-3">
+    <div class="row">
+		<h6 class="fw-bold mb-2 d-flex justify-content-between align-items-center">
+		    DETAILS PLAN
+			<a href="total.jsp?year=<%= year %>&month=<%= month %>" class="text-secondary" title="월별 통계 보기">
+			    <i class="bi bi-bar-chart-fill" style="font-size: 1.5rem;"></i>
+			</a>
+		</h6>
+		
+		<div class="row row-cols-2 g-3">
+		    <% for (ReportData r : usageList) { %>
+   			 <div class="col d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <span style="width: 10px; height: 10px; background-color: black; border-radius: 50%; display:inline-block; margin-right: 5px;"></span>
+            <span style="background-color:<%= r.getColor() %>; border-radius:10px; padding:2px 8px;">
+                <%= r.getTitle() %>
+            </span>
+        </div>
+        <div class="<%= "지출".equals(r.getKind()) ? "text-danger" : "text-success" %> fw-semibold" style="font-size:0.9rem;">
+            <%= String.format("%,d", r.getTotal()) %>
+        </div>
+    </div>
+<% } %>
+		</div>
+	</div>
+</div>
 <!-- 달력 -->
 <div class="container-box mt-2">
     <h4 class="text-center mb-4"><%= year %>년 <%= (month + 1) %>월</h4>
-
+	   <!-- ✅ 입력 버튼 추가 -->
+    <div class="text-end mb-3">
+        <a href="insertCashForm.jsp" class="btn btn-sm btn-success">
+            <i class="bi bi-pencil-square me-1"></i> 수입/지출 입력
+        </a>
+    </div>
     <table class="table table-bordered calendar-table">
         <thead class="text-center">
             <tr>
@@ -126,47 +167,55 @@
             </tr>
         </thead>
         <tbody>
-            <%
-                int cellCount = 0;
-                out.println("<tr>");
-                for (int i = 0; i < startBlank; i++) {
-                    out.println("<td></td>");
-                    cellCount++;
-                }
-
-                for (int date = 1; date <= lastDate; date++) {
-                    if (cellCount % 7 == 0 && cellCount != 0) {
-                        out.println("</tr><tr>");
-                    }
-
-                    boolean isToday = (year == Calendar.getInstance().get(Calendar.YEAR)) &&
-                                      (month == Calendar.getInstance().get(Calendar.MONTH)) &&
-                                      (date == Calendar.getInstance().get(Calendar.DATE));
-
-                    out.println("<td class='" + (isToday ? "today" : "") + "'>");
-                    out.println("<a href='dateList.jsp?year=" + year + "&month=" + (month + 1) + "&date=" + date + "' class='date-link'>");
-                    out.println("<strong>" + date + "</strong><br>");
-
-                    ArrayList<Cash> list = cashMap.get(date);
-                    if (list != null) {
-                    	for (Cash c : list) {
-                    		String kindClass = "수입".equals(c.getKind()) ? "text-success" : "text-danger";
-                    		out.println("<div class='" + kindClass + "' style='font-size:0.75rem;'>");
-                    		out.println("[" + c.getCategoryTitle() + "] " + c.getMemo() + ": ￦" + c.getPrice());
-                    		out.println("</div>");
-                    	}
-                    }
-
-                    out.println("</a></td>");
-                    cellCount++;
-                }
-
-                while (cellCount % 7 != 0) {
-                    out.println("<td></td>");
-                    cellCount++;
-                }
-                out.println("</tr>");
-            %>
+		<% 
+			int cellCount = 0;
+			out.println("<tr>");
+			for (int i = 0; i < startBlank; i++) {
+				out.println("<td></td>");
+				cellCount++;
+			}
+			
+			for (int date = 1; date <= lastDate; date++) {
+				if (cellCount % 7 == 0 && cellCount != 0) {
+					out.println("</tr><tr>");
+				}
+			
+				boolean isToday = (year == Calendar.getInstance().get(Calendar.YEAR)) &&
+				                  (month == Calendar.getInstance().get(Calendar.MONTH)) &&
+				                  (date == Calendar.getInstance().get(Calendar.DATE));
+			
+				out.println("<td class='" + (isToday ? "today" : "") + "'>");
+				out.println("<a href='dateList.jsp?year=" + year + "&month=" + (month + 1) + "&date=" + date + "' class='date-link'>");
+				out.println("<strong>" + date + "</strong><br>");
+			
+				ArrayList<Cash> list = cashMap.get(date);
+				if (list != null) {
+					for (Cash c : list) {
+						String kindClass = "수입".equals(c.getKind()) ? "text-success" : "text-danger";
+						String bgStyle = "background-color:" + c.getColor() + "; padding:2px 6px; border-radius:10px;";
+			
+						out.println("<div style='margin-bottom:3px;'>");
+						out.println("<span style='" + bgStyle + "; font-size:0.75rem;' class='" + kindClass + " fw-semibold'>");
+						out.println(c.getCategoryTitle());
+						out.println("</span> ");
+						out.println("<span style='font-size:0.75rem;'>");
+						out.println(c.getMemo() + " : ￦" + c.getPrice());
+						out.println("</span>");
+						out.println("</div>");
+					}
+					
+				}
+			
+				out.println("</a></td>"); // ✅ 누락된 </td>
+				cellCount++;              // ✅ 누락된 cellCount++
+			}
+			
+			while (cellCount % 7 != 0) {
+				out.println("<td></td>");
+				cellCount++;
+			}
+			out.println("</tr>");
+	%>
         </tbody>
     </table>
 

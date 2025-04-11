@@ -2,10 +2,11 @@ package dto;
 
 import java.time.LocalDateTime;
 
-public class Category {
+public class Category extends Object {
 	private int categoryNo;           // PK: 자동 증가
 	private String kind;              // 수입 or 지출
-	private String title;             // 카테고리 제목
+	private String title;
+	private String color; // 카테고리 제목
 	private LocalDateTime createdate; // 생성일
 
 	// ======= Getter / Setter =======
@@ -20,6 +21,14 @@ public class Category {
 
 	public String getKind() {
 		return kind;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 	public void setKind(String kind) {

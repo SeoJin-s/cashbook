@@ -1,0 +1,74 @@
+package model;
+import java.sql.*;
+import dto.Receit;
+
+
+public class ReceitDao {
+	
+	// 1) 영수증 등록
+	public int insertReceit(int cashNo, String filename) throws ClassNotFoundException, SQLException {
+		int row = 0;
+		Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+        String sql = "INSERT INTO receit (cash_no, filename, createdate) VALUES (?, ?, NOW())";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, cashNo);
+        stmt.setString(2, filename);
+        
+        row = stmt.executeUpdate();
+        
+        stmt.close();
+        conn.close();
+		return row;
+        
+	
+	}
+
+	// 2) 영수증 조회 ( cash 번호 기준으로 1개 조회)
+	public Receit selectReceitByCashNo(int cashNo) throws ClassNotFoundException, SQLException {
+		Receit r = null;
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+        
+        String sql ="select * from receit where cash_no = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, cashNo);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+        	r = new Receit();
+        	r.setCashNo(rs.getInt("cash_no"));
+        	r.setFilename(rs.getString("filename"));
+        	r.setCreatedate(rs.getTimestamp("createdate").toLocalDateTime());
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+		return r;
+        
+	}
+	
+	//3) 영수증 삭제
+	public int deleteReceit(int cashNo) throws ClassNotFoundException, SQLException {
+		int row = 0;
+		
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+        
+        String sql = "delete from receit where cash_no = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, cashNo);
+        
+        row = stmt.executeUpdate();
+        
+        stmt.close();
+        conn.close();
+		return row;
+	}
+}
