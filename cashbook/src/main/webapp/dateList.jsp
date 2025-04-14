@@ -120,8 +120,8 @@
                         </div>
                     </div>
                 <% } else { %>
-                    없음
-                <% } %>
+				    <span style="font-size: 1.2rem;">❌</span>
+				<% } %>
             </td>
         </tr>
         <% } %>
