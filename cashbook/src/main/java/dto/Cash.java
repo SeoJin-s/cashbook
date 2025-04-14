@@ -12,7 +12,14 @@ public class Cash {
 	private String categoryTitle;
 	private String color; // ✅ 추가된 필드
 	private LocalDateTime createdate;
+	private String fileName;
 
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 	public int getCashNo() {
 		return cashNo;
 	}

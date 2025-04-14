@@ -32,7 +32,7 @@
 
 	<style>
 		body {
-			background-color: #f5eee6;
+			background-color: #ffffff;
 			font-family: 'Pretendard', 'Segoe UI', sans-serif;
 			display: flex;
 			align-items: center;
@@ -42,27 +42,28 @@
 		}
 
 		.message-box {
-			background-color: #fffefc;
+			background-color: #fff;
 			padding: 40px;
 			border-radius: 16px;
-			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 			text-align: center;
+			border-top: 6px solid #f32a3d;
 		}
 
 		h2 {
-			color: #388e3c;
-			font-weight: 700;
+			color: #f32a3d;
+			font-weight: 800;
 			margin-bottom: 15px;
 		}
 
 		p {
-			color: #4e342e;
+			color: #333;
 			font-size: 1.05rem;
 		}
 
 		.icon-success {
 			font-size: 40px;
-			color: #43a047;
+			color: #f32a3d;
 			margin-bottom: 10px;
 		}
 	</style>
@@ -72,7 +73,7 @@
 		<div class="icon-success">
 			<i class="bi bi-check-circle-fill"></i>
 		</div>
-		<h2>✅ 비밀번호 변경 완료</h2>
+		<h2>비밀번호 변경 완료</h2>
 		<p>1초 후 로그인 페이지로 이동합니다...</p>
 	</div>
 </body>

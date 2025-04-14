@@ -1,4 +1,5 @@
 package model;
+import java.io.File;
 import java.sql.*;
 import dto.Receit;
 
@@ -54,21 +55,42 @@ public class ReceitDao {
 	}
 	
 	//3) 영수증 삭제
-	public int deleteReceit(int cashNo) throws ClassNotFoundException, SQLException {
-		int row = 0;
-		
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
-        
-        String sql = "delete from receit where cash_no = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, cashNo);
-        
-        row = stmt.executeUpdate();
-        
-        stmt.close();
-        conn.close();
-		return row;
+	public int deleteReceit(int cashNo, String uploadPath) throws ClassNotFoundException, SQLException {
+	    int row = 0;
+
+	    Class.forName("com.mysql.cj.jdbc.Driver");
+	    Connection conn = DriverManager.getConnection(
+	        "jdbc:mysql://localhost:3306/cashbook", "root", "java1234");
+
+	    // 1. 파일명 조회
+	    String selectSql = "SELECT filename FROM receit WHERE cash_no = ?";
+	    PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+	    selectStmt.setInt(1, cashNo);
+	    ResultSet rs = selectStmt.executeQuery();
+
+	    String filename = null;
+	    if (rs.next()) {
+	        filename = rs.getString("filename");
+	    }
+	    rs.close();
+	    selectStmt.close();
+
+	    // 2. 파일 삭제
+	    if (filename != null) {
+	        File file = new File(uploadPath + File.separator + filename);
+	        if (file.exists()) {
+	            file.delete();
+	        }
+	    }
+
+	    // 3. DB에서 삭제
+	    String deleteSql = "DELETE FROM receit WHERE cash_no = ?";
+	    PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+	    deleteStmt.setInt(1, cashNo);
+	    row = deleteStmt.executeUpdate();
+
+	    deleteStmt.close();
+	    conn.close();
+	    return row;
 	}
 }

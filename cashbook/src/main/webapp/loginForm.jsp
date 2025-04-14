@@ -1,107 +1,140 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>관리자 로그인</title>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Pretendard -->
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111;
+      font-family: 'Pretendard', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-	<!-- Pretendard Font -->
-	<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
-	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Bootstrap Icons -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background-color: #1e1e1e;
+      border-radius: 16px;
+      padding: 40px 30px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    }
 
-	<style>
-		body {
-			background-color: #f5eee6;
-			font-family: 'Pretendard', 'Segoe UI', sans-serif;
-			font-size: 1.05rem;
-		}
+    .daum-logo {
+      font-size: 38px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
 
-		.login-container {
-			max-width: 450px;
-			margin: 100px auto;
-			padding: 40px;
-			background-color: #fffefc;
-			border-radius: 16px;
-			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-		}
+    .daum-logo span:nth-child(1) { color: #4285F4; }  /* D */
+    .daum-logo span:nth-child(2) { color: #EA4335; }  /* a */
+    .daum-logo span:nth-child(3) { color: #FBBC05; }  /* u */
+    .daum-logo span:nth-child(4) { color: #34A853; }  
+	.daum-logo span:nth-child(5) { color: #4285F4; }
+	.daum-logo span:nth-child(6) { color: #FBBC05; }
+	
+    .notice-box {
+      background-color: #2b2b2b;
+      color: #f55;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-		h2 {
-			text-align: center;
-			font-weight: 800;
-			color: #4e342e;
-			letter-spacing: 1px;
-			margin-bottom: 30px;
-		}
+    .form-control {
+      background-color: #111;
+      border: 1px solid #444;
+      color: white;
+      font-size: 1rem;
+      border-radius: 6px;
+      transition: border 0.2s ease;
+    }
 
-		.title-box {
-			display: inline-block;
-			padding: 6px 20px;
-			border-bottom: 3px solid #a1887f;
-			box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-			border-radius: 8px;
-			background-color: #fdfcf8;
-		}
+    .form-control:focus {
+      border-color: #4d90fe;
+      box-shadow: none;
+      background-color: #181818;
+    }
 
-		.form-control {
-			border-radius: 12px;
-			font-size: 1.05rem;
-		}
+    .form-control::placeholder {
+      color: #aaa;
+    }
 
-		.btn-brown {
-			background-color: #6d4c41;
-			color: white;
-			font-weight: 600;
-			border-radius: 12px;
-			box-shadow: 0 4px 10px rgba(109, 76, 65, 0.3);
-			transition: all 0.2s ease-in-out;
-		}
+    .btn-login {
+      background-color: #4d90fe;
+      border: none;
+      font-weight: bold;
+      font-size: 1.05rem;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(77, 144, 254, 0.4);
+      transition: all 0.2s ease;
+    }
 
-		.btn-brown:hover {
-			background-color: #5d4037;
-			transform: translateY(-2px);
-			box-shadow: 0 6px 14px rgba(109, 76, 65, 0.4);
-		}
+    .btn-login:hover {
+      background-color: #3c7ee6;
+      box-shadow: 0 6px 14px rgba(77, 144, 254, 0.5);
+    }
 
-		.alert {
-			border-radius: 12px;
-			font-size: 0.95rem;
-		}
-	</style>
+    .extra-links {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .extra-links a {
+      color: #aaa;
+      margin: 0 8px;
+      text-decoration: none;
+    }
+
+    .extra-links a:hover {
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
 
-	<div class="login-container">
-		<h2>
-			<span class="title-box">Rush&Cash</span>
-		</h2>
+  <div class="login-box">
+    <div class="daum-logo">
+      <span>S</span><span>e</span><span>o</span><span>J</span><span>i</span><span>n</span>
+    </div>
 
-		<% if ("1".equals(request.getParameter("error"))) { %>
-			<div class="alert alert-danger text-center mt-3" role="alert">
-				❌ 아이디 또는 비밀번호가 올바르지 않습니다.
-			</div>
-		<% } %>
+    <div class="notice-box">
+      카카오 계정으로 통합해주세요
+    </div>
 
-		<form method="post" action="loginAction.jsp" class="mt-4">
-			<div class="mb-3">
-				<label for="adminId" class="form-label">아이디</label>
-				<input type="text" id="adminId" name="adminId" class="form-control" required placeholder="아이디 입력">
-			</div>
+    <form method="post" action="loginAction.jsp">
+      <div class="mb-3">
+        <input type="text" class="form-control" name="adminId" placeholder="아이디" required>
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" name="adminPw" placeholder="비밀번호" required>
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-login">로그인</button>
+      </div>
+    </form>
 
-			<div class="mb-4">
-				<label for="adminPw" class="form-label">비밀번호</label>
-				<input type="password" id="adminPw" name="adminPw" class="form-control" required placeholder="비밀번호 입력">
-			</div>
-
-			<div class="d-grid">
-				<button type="submit" class="btn btn-brown">
-					<i class="bi bi-door-closed-fill me-1"></i> 로그인
-				</button>
-			</div>
-		</form>
-	</div>
+    <div class="extra-links">
+      <a href="#">아이디 찾기</a> | <a href="#">비밀번호 찾기</a>
+    </div>
+  </div>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%
 	String loginAdmin = (String) session.getAttribute("loginAdmin");
 	if (loginAdmin == null) {
@@ -9,88 +9,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Cashbook 관리</title>
+	<meta charset="UTF-8">
+	<title>Cashbook 홈</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+	<style>
+		body, html {
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			background-color: #fff;
+			color: #111;
+			font-family: 'Pretendard', sans-serif;
+		}
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+		.top-bar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 15px 20px;
+			background-color: #f1f1f1;
+			border-bottom: 1px solid #ccc;
+		}
 
-<style>
-	body {
-		background-color: #f5eee6;
-		font-family: 'Segoe UI', sans-serif;
-	}
+		.center-wrapper {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: calc(100vh - 70px); /* 상단바 제외 */
+		}
 
-	.header-bar {
-		max-width: 900px;
-		margin: 20px auto 0;
-		padding: 10px 20px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+		.icon-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 140px);
+			gap: 24px;
+			text-align: center;
+		}
 
-	.index-container {
-		max-width: 600px;
-		margin: 40px auto;
-		padding: 40px;
-		background: #ffffff;
-		border-radius: 18px;
-		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-		text-align: center;
-	}
+		.menu-btn {
+			padding: 25px 10px;
+			border-radius: 12px;
+			text-decoration: none;
+			font-weight: bold;
+			transition: all 0.2s ease-in-out;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+			font-size: 1rem;
+			border: 2px solid transparent;
+		}
 
-	h1 {
-		font-size: 2rem;
-		font-weight: 800;
-		color: #4e342e;
-		margin-bottom: 40px;
-		letter-spacing: 1px;
-		border-bottom: 3px solid #a1887f;
-		display: inline-block;
-		padding-bottom: 8px;
-	}
+		.menu-btn i {
+			font-size: 1.6rem;
+			display: block;
+			margin-bottom: 8px;
+		}
 
-	.btn-brown {
-		background-color: #6d4c41;
-		color: white;
-		font-weight: 600;
-		padding: 12px 20px;
-		border-radius: 10px;
-		box-shadow: 0 4px 12px rgba(109, 76, 65, 0.3);
-		transition: all 0.2s ease-in-out;
-		text-decoration: none;
-	}
+		.menu-btn.red {
+			background-color: #f32a3d;
+			color: white;
+			border-color: #e04848;
+		}
+		.menu-btn.green {
+			background-color: #4caf50;
+			color: white;
+			border-color: #3d9442;
+		}
+		.menu-btn.yellow {
+			background-color: #FFD600;
+			color: #111;
+			border-color: #e0c000;
+		}
+		.menu-btn.blue {
+			background-color: #4d90fe;
+			color: white;
+			border-color: #3c7ee6;
+		}
 
-	.btn-brown:hover {
-		background-color: #5d4037;
-		box-shadow: 0 6px 16px rgba(109, 76, 65, 0.4);
-		transform: translateY(-2px);
-	}
-</style>
+		.menu-btn:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+		}
+	</style>
 </head>
 <body>
 
-	<!-- 🔐 상단 관리자 로그인 정보 -->
-	<div class="header-bar">
-		<div class="fw-semibold text-dark fs-5">
-			<i class="bi bi-person-circle me-2"></i><%= loginAdmin %> 님
-		</div>
-		<a href="/cashbook/logout.jsp" class="btn btn-sm btn-outline-danger">
-			<i class="bi bi-box-arrow-right"></i> 로그아웃
+<!-- 🔐 상단 로그인 상태 -->
+<div class="top-bar">
+	<div>
+		<i class="bi bi-person-circle me-2"></i><%= loginAdmin %> 님
+	</div>
+	<a href="/cashbook/logOut.jsp" class="btn btn-sm btn-outline-dark">
+		<i class="bi bi-box-arrow-right"></i> 로그아웃
+	</a>
+</div>
+
+<!-- 🧩 메뉴 중앙 정렬 -->
+<div class="center-wrapper">
+	<div class="icon-grid">
+		<a href="/cashbook/updateAdminPwForm.jsp" class="menu-btn red">
+			<i class="bi bi-lock-fill"></i>비밀번호
+		</a>
+		<a href="/cashbook/CategoryList.jsp" class="menu-btn green">
+			<i class="bi bi-folder-fill"></i>카테고리
+		</a>
+		<a href="/cashbook/monthList.jsp" class="menu-btn yellow">
+			<i class="bi bi-calendar3"></i>달력
+		</a>
+		<a href="/cashbook/totalset.jsp" class="menu-btn blue">
+			<i class="bi bi-bar-chart-line-fill"></i>통계
 		</a>
 	</div>
-
-	<!-- 📦 메인 버튼 -->
-	<div class="index-container">
-		<h1>INVENTORY</h1>
-		<div class="d-grid gap-3 mt-4">
-			<a href="/cashbook/updateAdminPwForm.jsp" class="btn btn-brown">🔒 비밀번호 수정</a>
-			<a href="/cashbook/CategoryList.jsp" class="btn btn-brown">📁 카테고리</a>
-		</div>
-	</div>
+</div>
 
 </body>
 </html>

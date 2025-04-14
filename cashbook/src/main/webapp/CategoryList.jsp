@@ -39,202 +39,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>LIST</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
-<style>
-	body {
-		background-color: #fbf5ef;
-		font-family: 'Pretendard', sans-serif;
-	}
-
-	.container-box {
-		max-width: 1000px;
-		margin: 40px auto;
-		background-color: #ffffff;
-		padding: 40px;
-		border-radius: 20px;
-		box-shadow: 0 10px 30px rgba(139, 69, 19, 0.1);
-	}
-
-	h2 {
-		color: #8b4513;
-		font-weight: 800;
-		border-bottom: 3px solid #d2b48c;
-		display: inline-block;
-		padding-bottom: 10px;
-	}
-
-	.table th {
-		background-color: #e0ccb1;
-		color: #8b4513;
-	}
-
-	.table td {
-		vertical-align: middle;
-		color: #5a3d1b;
-	}
-
-	.btn-brown {
-		background-color: #8b4513;
-		color: white;
-		font-weight: 600;
-		border-radius: 10px;
-		box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
-		transition: all 0.2s ease-in-out;
-	}
-
-	.btn-brown:hover {
-		background-color: #6a3210;
-		transform: translateY(-2px);
-		box-shadow: 0 6px 16px rgba(139, 69, 19, 0.3);
-	}
-
-	.btn-outline-success,
-	.btn-outline-danger,
-	.btn-outline-secondary {
-		font-weight: 600;
-		border-radius: 8px;
-	}
-
-	.form-control:focus {
-		border-color: #d2b48c;
-		box-shadow: 0 0 0 0.2rem rgba(210, 180, 140, 0.5);
-	}
-
-	.badge.bg-primary {
-		background-color: #5f9ea0 !important;
-	}
-
-	.badge.bg-danger {
-		background-color: #cd5c5c !important;
-	}
-
-	.page-link {
-		color: #8b4513;
-	}
-
-	.page-item.active .page-link {
-		background-color: #8b4513;
-		border-color: #8b4513;
-	}
-
-	.page-link:hover {
-		color: #6a3210;
-	}
-
-	.pagination .disabled .page-link {
-		color: #d2b48c;
-	}
-</style>
-
+  <meta charset="UTF-8">
+  <title>카테고리 리스트</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fff;
+      color: #333;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .category-card {
+      background-color: #dcebdc;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.2s ease-in-out;
+    }
+    .category-card:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+      transform: translateY(-2px);
+    }
+    .badge-kind {
+      font-size: 0.85rem;
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+    .badge-income {
+      background-color: #4caf50;
+    }
+    .badge-expense {
+      background-color: #f44336;
+    }
+    .btn-action {
+      font-size: 0.85rem;
+    }
+    h4.title {
+      color: #4caf50;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background-color: #4caf50;
+      border-color: #4caf50;
+    }
+    .btn-primary:hover {
+      background-color: #449d48;
+      border-color: #3d8b40;
+    }
+    .page-link {
+      color: #4caf50;
+    }
+    .page-item.active .page-link {
+      background-color: #4caf50;
+      border-color: #4caf50;
+    }
+  </style>
 </head>
 <body>
 
-<!-- 🔐 로그인 관리자 상단 표시 -->
-<div class="container mt-3 mb-2">
-	<div class="d-flex justify-content-between align-items-center">
-		<span class="fw-semibold text-dark fs-5">
-			<i class="bi bi-person-circle me-2"></i> <%= loginAdmin %> 님 환영합니다.
-		</span>
-		<div class="d-flex gap-2">
-			<a href="/cashbook/logOut.jsp" class="btn btn-sm btn-outline-danger">
-				<i class="bi bi-box-arrow-right me-1"></i> 로그아웃
-			</a>
-			<a href="/cashbook/index.jsp" class="btn btn-sm btn-outline-secondary">
-				<i class="bi bi-house me-1"></i> 홈으로
-			</a>
-		</div>
-	</div>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="title"><i class="bi bi-folder-fill me-2"></i>카테고리 리스트</h4>
+    <a href="insertCategoryForm.jsp" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i> 추가
+    </a>
+  </div>
+
+  <form method="get" action="CategoryList.jsp" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="searchWord" class="form-control" placeholder="제목으로 검색" value="<%= searchWord %>">
+      <button type="submit" class="btn btn-primary">검색</button>
+    </div>
+  </form>
+
+  <div class="row row-cols-1 g-3">
+    <% for (Category c : list) { %>
+    <div class="col">
+      <div class="category-card d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <% if ("수입".equals(c.getKind())) { %>
+            <span class="badge badge-kind badge-income">수입</span>
+          <% } else { %>
+            <span class="badge badge-kind badge-expense">지출</span>
+          <% } %>
+          <div>
+            <div class="fw-bold fs-5"><%= c.getTitle() %></div>
+            <div class="text-muted small">생성일: <%= c.getCreatedate().toLocalDate() %></div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="updateCategoryTitleForm.jsp?categoryNo=<%= c.getCategoryNo() %>" class="btn btn-sm btn-outline-success btn-action">수정</a>
+          <a href="deleteCategory.jsp?categoryNo=<%= c.getCategoryNo() %>" class="btn btn-sm btn-outline-danger btn-action" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- 페이지네이션 -->
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item <%= (currentPage == 1 ? "disabled" : "") %>">
+        <a class="page-link" href="CategoryList.jsp?currentPage=<%= currentPage - 1 %>&searchWord=<%= searchWord %>">이전</a>
+      </li>
+      <% for (int i = 1; i <= lastPage; i++) { %>
+        <li class="page-item <%= (i == currentPage ? "active" : "") %>">
+          <a class="page-link" href="CategoryList.jsp?currentPage=<%= i %>&searchWord=<%= searchWord %>"><%= i %></a>
+        </li>
+      <% } %>
+      <li class="page-item <%= (currentPage == lastPage ? "disabled" : "") %>">
+        <a class="page-link" href="CategoryList.jsp?currentPage=<%= currentPage + 1 %>&searchWord=<%= searchWord %>">다음</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="text-center mt-4">
+    <a href="monthList.jsp?year=<%= thisYear %>&month=<%= thisMonth %>" class="btn btn-primary px-4">
+      <i class="bi bi-journal-text me-2"></i> 달력
+    </a>
+    <a href="index.jsp" class="btn btn-outline-secondary ms-2 px-4">
+      <i class="bi bi-house me-1"></i> 홈으로
+    </a>
+  </div>
 </div>
-
-<!-- ✅ 본문 컨테이너 -->
-<div class="container-box">
-	<div class="d-flex justify-content-between align-items-center mb-4">
-		<h2><i class="bi bi-journals me-2 text-warning"></i> LIST</h2>
-		<a href="insertCategoryForm.jsp" class="btn btn-brown">
-			<i class="bi bi-plus-circle me-1"></i> 추가
-		</a>
-	</div>
-
-	<!-- 🔍 검색 -->
-	<form method="get" action="CategoryList.jsp" class="mb-4">
-		<div class="d-flex justify-content-center">
-			<input type="text" name="searchWord" class="form-control w-50 me-2 rounded-3 shadow-sm"
-				placeholder="제목으로 검색" value="<%= searchWord %>">
-			<button type="submit" class="btn btn-outline-secondary rounded-3 fw-semibold">
-				<i class="bi bi-search"></i> 검색
-			</button>
-		</div>
-	</form>
-
-	<!-- 📁 테이블 -->
-	<table class="table table-bordered table-hover text-center align-middle">
-		<thead>
-			<tr>
-				<th>번호</th>
-				<th>분류</th>
-				<th>제목</th>
-				<th>생성일</th>
-				<th>관리</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% for (Category c : list) { %>
-			<tr>
-				<td><%= c.getCategoryNo() %></td>
-				<td>
-					<% if ("수입".equals(c.getKind())) { %>
-						<span class="badge bg-primary">수입</span>
-					<% } else { %>
-						<span class="badge bg-danger">지출</span>
-					<% } %>
-				</td>
-				<td><%= c.getTitle() %></td>
-				<td><%= c.getCreatedate().toLocalDate() %></td>
-				<td>
-					<a href="updateCategoryTitleForm.jsp?categoryNo=<%= c.getCategoryNo() %>"
-					   class="btn btn-sm btn-outline-success me-1">
-						<i class="bi bi-pencil-square"></i> 수정
-					</a>
-					<a href="deleteCategory.jsp?categoryNo=<%= c.getCategoryNo() %>"
-					   class="btn btn-sm btn-outline-danger"
-					   onclick="return confirm('정말 삭제하시겠습니까?')">
-						<i class="bi bi-trash"></i> 삭제
-					</a>
-				</td>
-			</tr>
-			<% } %>
-		</tbody>
-	</table>
-
-	<!-- 📄 페이지네이션 -->
-	<nav class="mt-4">
-		<ul class="pagination justify-content-center">
-			<li class="page-item <%= (currentPage == 1 ? "disabled" : "") %>">
-				<a class="page-link" href="CategoryList.jsp?currentPage=<%= currentPage - 1 %>&searchWord=<%= searchWord %>">이전</a>
-			</li>
-			<% for (int i = 1; i <= lastPage; i++) { %>
-				<li class="page-item <%= (i == currentPage ? "active" : "") %>">
-					<a class="page-link" href="CategoryList.jsp?currentPage=<%= i %>&searchWord=<%= searchWord %>"><%= i %></a>
-				</li>
-			<% } %>
-			<li class="page-item <%= (currentPage == lastPage ? "disabled" : "") %>">
-				<a class="page-link" href="CategoryList.jsp?currentPage=<%= currentPage + 1 %>&searchWord=<%= searchWord %>">다음</a>
-			</li>
-		</ul>
-	</nav>
-
-<!-- 📆 월별 보기 (브라운톤 스타일) -->
-<div class="text-center mt-4">
-	<a href="monthList.jsp?year=<%= thisYear %>&month=<%= thisMonth %>" 
-	   class="btn btn-brown px-4 py-2 rounded-pill shadow-sm">
-		<i class="bi bi-journal-text me-2"></i> Calender
-	</a>
-</div>
-
 
 </body>
 </html>

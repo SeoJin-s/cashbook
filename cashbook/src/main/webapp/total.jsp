@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, model.*, dto.*" %>
 <%
     if (session.getAttribute("loginAdmin") == null) {
@@ -26,14 +26,12 @@
     List<ReportData> chartList = new ArrayList<>();
     for (ReportData r : usageList) {
         if (r.getTotal() != 0) {
-            // pie chart에선 양수만 사용해야 하므로 음수는 절댓값 처리
             if ("지출".equals(r.getKind())) {
-                r.setTotal(Math.abs(r.getTotal())); // 음수 → 양수로 변환
+                r.setTotal(Math.abs(r.getTotal()));
                 totalExpense += Math.abs(r.getTotal());
             } else if ("수입".equals(r.getKind())) {
                 totalIncome += r.getTotal();
             }
-
             chartList.add(r);
         }
     }
@@ -42,44 +40,47 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>월별 통계 보기</title>
+    <title>가계부 통계</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: #f9f6f2;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            font-family: 'Pretendard', sans-serif;
+            padding: 40px;
+        }
+        h2, h4 {
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #3c7ee6;
         }
         .summary-box {
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 40px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .summary-box h4 {
-            margin-bottom: 30px;
-            text-align: center;
+        canvas {
+            max-width: 100%;
+        }
+        .text-end a {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
 <div class="summary-box">
     <h4><%= year %>년 <%= month + 1 %>월 통계</h4>
     <div class="mb-2"><strong>INCOME.</strong> <span class="text-success fw-bold">₩ <%= String.format("%,d", totalIncome) %></span></div>
     <div class="mb-2"><strong>EXPENSES.</strong> <span class="text-danger fw-bold">₩ <%= String.format("%,d", totalExpense) %></span></div>
     <div class="mb-4"><strong>BANK BALANCE.</strong> <span class="fw-bold">₩ <%= String.format("%,d", totalIncome - totalExpense) %></span></div>
 
-    <!-- 파이처트 -->
     <canvas id="expenseChart" width="400" height="400"></canvas>
 
-    <div class="text-end mt-4">
-        <a href="monthList.jsp?year=<%= year %>&month=<%= month %>" class="btn btn-sm btn-outline-secondary">
-            ← 월별 목록으로
-        </a>
-    </div>
 </div>
 
 <script>
@@ -101,36 +102,44 @@ const backgroundColor = [
     <% } %>
 ];
 const config = {
-	    type: 'pie',
-	    data: {
-	        labels: labels,
-	        datasets: [{
-	            data: data,
-	            backgroundColor: backgroundColor,
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {
-	        responsive: true,
-	        plugins: {
-	            legend: { position: 'bottom' },
-	            tooltip: {
-	                callbacks: {
-	                    label: function(context) {
-	                        let label = context.label || '';
-	                        let value = context.parsed;
-	                        return label + ": ₩ " + value.toLocaleString();
-	                    }
-	                }
-	            }
-	        }
-	    }
-	};
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: data,
+            backgroundColor: backgroundColor,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        let value = context.parsed;
+                        return label + ": ₩ " + value.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+};
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const ctx = document.getElementById('expenseChart').getContext('2d');
-        new Chart(ctx, config);
-    });
+window.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    new Chart(ctx, config);
+});
 </script>
+<div class="d-flex justify-content-center gap-3 mt-4">
+    <a href="totalset.jsp" class="btn btn-primary">
+        <i class="bi bi-bar-chart-line-fill me-1"></i> 통계
+    </a>
+    <a href="monthList.jsp" class="btn btn-primary">
+        <i class="bi bi-calendar3 me-1"></i> 달력으로
+    </a>
+</div>
 </body>
 </html>
